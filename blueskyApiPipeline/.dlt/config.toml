@@ -9,3 +9,7 @@ dlthub_telemetry = true
 resources = ["a", "b", "c"] # please set me up!
 [sources.rest_api.client] # please set me up!
 key = "value"
+
+
+[normalize]
+loader_file_format="paquet"
