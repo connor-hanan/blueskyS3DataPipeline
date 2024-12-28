@@ -1,12 +1,11 @@
 from datetime import datetime, timedelta
+from typing import Any
 import dlt
-from dlt.sources.rest_api import (
-    RESTAPIConfig,
-    rest_api_resources
-)
+from dlt.sources.rest_api import RESTAPIConfig, rest_api_resources
+
 
 # Funtion to calculate date range
-def getDateRange() -> tuple[datetime, datetime]:
+def getDateRange() -> tuple[str, str]:
     """
     Calculates date range for the API call
     Returns
@@ -15,18 +14,17 @@ def getDateRange() -> tuple[datetime, datetime]:
 
     yesterday = datetime.now() - timedelta(days=1)
 
-    since = yesterday.replace(
-        hour=0, minute=0, second=0, microsecond=0
-        ).isoformat() + "Z"
-    until = yesterday.replace(
-        hour=23, minute=59, second=59, microsecond=999999
-        )
-    
+    since = yesterday.replace(hour=0, minute=0, second=0,
+                              microsecond=0).isoformat() + 'Z'
+    until = yesterday.replace(hour=23, minute=59, second=59,
+                              microsecond=999999).isoformat() + 'Z'
+
     return since, until
+
 
 # Define the Bluesky posts resource
 @dlt.source
-def blueskySource() -> None:
+def blueskySource() -> Any:
     """
     Configure the API call
     """
@@ -36,16 +34,14 @@ def blueskySource() -> None:
 
     # Define RESTAPIConfig for Bluesky API
     config: RESTAPIConfig = {
-        "client": {
-            "base_url": "https://public.api.bsky.app/xrpc/"
-        },
+        "client": {"base_url": "https://public.api.bsky.app/xrpc/"},
         "resources": [
             {
                 "name": "posts",
                 "endpoint": {
                     "path": "app.bsky.feed.searchPosts",
                     "params": {
-                        "q": "data engineer", # Search term
+                        "q": "data engineer",  # Search term
                         "sort": "latest",
                         "since": since,
                         "until": until,
@@ -62,10 +58,11 @@ def blueskySource() -> None:
 
 
 # Create and configure the pipeline
-pipeline = dlt.pipeline(pipeline_name = "blueskyAPI",
-                        destination="filesystem",
-                        dataset_name="blueskyData"
-                        )
+pipeline = dlt.pipeline(
+    pipeline_name="blueskyAPI",
+    destination="filesystem",
+    dataset_name="blueskyData"
+)
 
 # Run the pipeline
 loadInfo = pipeline.run(blueskySource())
