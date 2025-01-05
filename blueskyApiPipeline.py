@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, Literal
 import dlt
 from dlt.sources.rest_api import RESTAPIConfig, rest_api_resources
 
@@ -57,12 +57,16 @@ def blueskySource() -> Any:
     yield from rest_api_resources(config)
 
 
+# loader_file_format: Literal['jsonl', 'typed-jsonl', 'insert_values', 'parquet', 'csv', 'reference'] = 'parquet'
+
+
 # Create and configure the pipeline
 pipeline = dlt.pipeline(
     pipeline_name="blueskyAPI",
     destination="filesystem",
-    dataset_name="blueskyData"
+    dataset_name="blueskyData",
 )
+
 
 # Run the pipeline
 loadInfo = pipeline.run(blueskySource())
