@@ -1,4 +1,4 @@
-bsS3DB
+.venv
 .DS_Store
 
 # ignore secrets, virtual environments and typical python compilation artifacts

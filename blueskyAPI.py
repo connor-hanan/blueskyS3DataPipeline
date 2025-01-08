@@ -30,7 +30,7 @@ def blueskySource() -> Any:
     """
 
     # Get the date range
-    since, until = getDateRange()
+    since, until = getDateRangcde()
 
     # Define RESTAPIConfig for Bluesky API
     config: RESTAPIConfig = {
