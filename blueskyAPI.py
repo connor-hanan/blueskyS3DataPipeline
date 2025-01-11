@@ -1,11 +1,12 @@
 from datetime import datetime, timedelta
 from typing import Any
 import dlt
-from dlt.sources.rest_api import RESTAPIConfig, rest_api_resources
+from dlt.sources.rest_api import rest_api_resources
+from dlt.sources.rest_api.typing import RESTAPIConfig
 
 
 # Funtion to calculate date range
-def getDateRange() -> tuple[str, str]:
+def get_date_range() -> tuple[str, str]:
     """
     Calculates date range for the API call
     Returns
@@ -24,13 +25,13 @@ def getDateRange() -> tuple[str, str]:
 
 # Define the Bluesky posts resource
 @dlt.source
-def blueskySource() -> Any:
+def bluesky_source() -> Any:
     """
     Configure the API call
     """
 
     # Get the date range
-    since, until = getDateRangcde()
+    since, until = get_date_range()
 
     # Define RESTAPIConfig for Bluesky API
     config: RESTAPIConfig = {
@@ -57,17 +58,20 @@ def blueskySource() -> Any:
     yield from rest_api_resources(config)
 
 
-# loader_file_format: Literal['jsonl', 'typed-jsonl', 'insert_values', 'parquet', 'csv', 'reference'] = 'parquet'
+def create_pipeline() -> Any:
+    """
+    Create and configure the pipeline
+    """
+    pipeline = dlt.pipeline(
+        pipeline_name="bluesky_api",
+        destination="filesystem",
+        dataset_name="blueskyData",
+    )
+    return pipeline
 
 
-# Create and configure the pipeline
-pipeline = dlt.pipeline(
-    pipeline_name="blueskyAPI",
-    destination="filesystem",
-    dataset_name="blueskyData",
-)
-
-
+# Set pipeline variable
+pipeline = create_pipeline()
 # Run the pipeline
-loadInfo = pipeline.run(blueskySource())
-print(loadInfo)
+load_info = pipeline.run(bluesky_source())
+print(load_info)

@@ -2,13 +2,13 @@
 FROM python:3.12-slim
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
 
 # Install system dependencies
+# `apt-get update` updates the package lists for the APT package manager
 RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
