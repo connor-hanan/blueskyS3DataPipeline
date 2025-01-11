@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from typing import Any
 import dlt
-from dlt.sources.rest_api import rest_api_resources
-from dlt.sources.rest_api.typing import RESTAPIConfig
+from dlt.sources.rest_api import (RESTAPIConfig,  # type: ignore
+                                  rest_api_resources)
 
 
 # Funtion to calculate date range
@@ -63,9 +63,10 @@ def create_pipeline() -> Any:
     Create and configure the pipeline
     """
     pipeline = dlt.pipeline(
-        pipeline_name="bluesky_api",
+        pipeline_name="blueskyAPI",
         destination="filesystem",
         dataset_name="blueskyData",
+        progress="log",
     )
     return pipeline
 

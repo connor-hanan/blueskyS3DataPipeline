@@ -12,4 +12,4 @@ key = "value"
 
 
 [normalize]
-loader_file_format="paquet"
+loader_file_format="parquet"
