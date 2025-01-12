@@ -24,4 +24,4 @@ RUN pip install --upgrade pip && \
 COPY . .
 
 # Default command to run (optional)
-CMD ["python"]
+CMD ["python", "dlt"]
