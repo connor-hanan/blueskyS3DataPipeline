@@ -1,7 +1,8 @@
 from dagster import AssetExecutionContext
 from dagster_embedded_elt.dlt import DagsterDltResource, dlt_assets
 from dlt import pipeline
-from bluesky_posts_dagster import bluesky_source
+from .bluesky_posts_dagster import bluesky_source
+from typing import Generator, Any
 
 
 @dlt_assets(
@@ -15,5 +16,8 @@ from bluesky_posts_dagster import bluesky_source
     name="bluesky",
     group_name="bluesky",
 )
-def dagster_git_assets(context: AssetExecutionContext, dlt: DagsterDltResource):
+def dagster_bluesky_assets(
+        context: AssetExecutionContext,
+        dlt: DagsterDltResource
+        ) -> Generator[Any, DagsterDltResource, None]:
     yield from dlt.run(context=context)

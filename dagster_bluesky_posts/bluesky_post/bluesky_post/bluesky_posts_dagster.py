@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from typing import Any
 import dlt
-from dlt.sources.rest_api import (RESTAPIConfig,  # type: ignore
+from dlt.sources.rest_api import (RESTAPIConfig,
                                   rest_api_resources)
 
 
