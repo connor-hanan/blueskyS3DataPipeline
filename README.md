@@ -1,59 +1,72 @@
 # Bluesky-post API
 
-Personal project building a data piple using Bluesky's public API to AWS S3, deployed using Dagster. I used dlt, an open-source python library, to extract and load data from Bluesky's API endpoint, and dagster to orchestrate the pipeline.
+Personal project building a data pipeline using Bluesky's public API to AWS S3, deployed using Dagster. I used `dlt`, an open-source Python library, to extract and load data from Bluesky's API endpoint, and Dagster to orchestrate the pipeline.
 
 ## Tools
 
 ### [dlt](https://dlthub.com/docs/intro)
 
-dlt is an open-source Python library that loads data from various, often messy data sources into well-structured, live datasets. It offers a lightweight interface for extracting data from REST APIs, SQL databases, cloud storage, Python data structures, and many more.
+dlt is an open-source Python library that loads data from various, often messy data sources into well-structured, live datasets. It offers a lightweight interface for extracting data from REST APIs, SQL databases, cloud storage, Python data structures, and more.
 
 dlt is designed to be easy to use, flexible, and scalable:
 
-    - dlt infers schemas and data types, normalizes the data, and handles nested data structures.
-    - dlt supports a variety of popular destinations and has an interface to add custom destinations to create reverse ETL pipelines.
-    - dlt can be deployed anywhere Python runs, be it on Airflow, serverless functions, or any other cloud deployment of your choice.
-    - dlt automates pipeline maintenance with schema evolution and schema and data contracts.
+- It infers schemas and data types, normalizes the data, and handles nested data structures.
+- It supports a variety of popular destinations and has an interface to add custom destinations to create reverse ETL pipelines.
+- It can be deployed anywhere Python runs, be it on Airflow, serverless functions, or any other cloud deployment of your choice.
+- It automates pipeline maintenance with schema evolution and schema and data contracts.
 
 ### [Dagster](https://docs.dagster.io/getting-started)
 
-Dagster is an orchestrator that's designed for developing and maintaining data assets, such as tables, data sets, machine learning models, and reports.
+Dagster is an orchestrator designed for developing and maintaining data assets, such as tables, datasets, machine learning models, and reports.
 
-You declare functions that you want to run and the data assets that those functions produce or update. Dagster then helps you run your functions at the right time and keep your assets up-to-date.
+You declare functions that you want to run and the data assets that those functions produce or update. Dagster then helps you run your functions at the right time and keep your assets up to date.
 
 Dagster is designed to be used at every stage of the data development lifecycle, including local development, unit tests, integration tests, staging environments, and production.
 
-### Python
+## Python Configuration
 
-As with every new project, we create a virtual enviroment and add the Python version we want to develop with. I'm using Python verson 3.12 for this project
+As with every new project, we create a virtual environment and add the Python version we want to develop with. I'm using Python version 3.12 for this project.
 
-1: **Create a new virtual environment with Python 3.12**
+1. **Install Python 3.12**
 
 ```bash
 brew install python@3.12
 ```
 
-2: **Create a new virtual environment with Python 3.12**
+2. **Create a new virtual environment**
 
 ```bash
 python3.12 -m venv .venv
 ```
 
-3: **Activate the new virtual environment**
+3. **Activate the virtual environment**
 
 ```bash
 source .venv/bin/activate
 ```
 
-4: **Install the required packages from `requirements.txt`**
+4. **Install the required packages from `requirements.txt`**
 
 ```bash
 pip install -r requirements.txt
 ```
 
+The package listed in the `.txt` file contains various prerequisites and is intended to be used in conjunction with AWS, which is exactly what we need.
+
+Once the installation is complete, ensure you are in the correct project directory and run the following command:
+
+```bash
+dlt init rest_api filesystem
+```
+
+This command will create a project scaffolding, keeping our assets well-organized. The `.dlt` directory contains key files used to configure different parameters:
+
+- `secrets.toml`: Stores the necessary credentials required to access my personal AWS account.
+- `config.toml`: Used for configuring the pipeline.
+
 ## Orchestration
 
-Good orchestration is absolutley key for any quality data pipeline. A well orchestated pipline will be automated, helping us ensure clean, quality data at a consistnet time thats both scalable and efficent, helping us keep cost down and trust in the data high. It will have minimal manual interventions and robust error handling. Dagster, has all that and more.
+Good orchestration is absolutely key for any quality data pipeline. A well-orchestrated pipeline will be automated, ensuring clean, high-quality data at a consistent time. It should be scalable and efficient, helping to keep costs low and trust in the data high. It will have minimal manual interventions and robust error handling. Dagster provides all that and more.
 
 ```bash
 mkdir dagster_bluesky_posts
@@ -61,4 +74,25 @@ cd dagster_bluesky_posts
 dagster project scaffold
 ```
 
-The dagster project scaffold command generates the default folder structure, including essential files like pyproject.toml and setup.py, providing a starting point for our pipeline.
+The `dagster project scaffold` command generates the default folder structure, including essential files like `pyproject.toml` and `setup.py`, providing a starting point for our pipeline.
+
+**IMPORTANT:**
+Move the `.dlt` directory into the `bluesky_post` directory to ensure that the `dlt` library has access to all the necessary objects needed to run the pipeline.
+
+The final step is to configure the pipeline, and Dagster comes with an easy-to-use GUI! Simply run:
+
+```bash
+pip install -e "[.dev]"
+```
+
+in the first directory named `bluesky_post`, not the second! Once installed, run:
+
+```bash
+dagster dev
+```
+
+This command will launch a GUI on your local machine, allowing you to interact with the pipeline visually!
+
+![dagster-gui](./images/dagster-ui.png)
+
+And there you have it! From here, we can schedule the pipeline to run automatically, along with many other administrative functions!
