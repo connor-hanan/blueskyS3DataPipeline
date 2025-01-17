@@ -5,12 +5,11 @@ from bluesky_post import assets  # noqa: TID252
 
 dlt_resource = DagsterDltResource()
 
+#  Unpack the list returned by load_assets_from_modules
 all_assets = load_assets_from_modules([assets])
 
 defs = Definitions(
-    assets=[
-        all_assets,
-    ],
+    assets=all_assets,
     resources={
         "dlt": dlt_resource,
     },
