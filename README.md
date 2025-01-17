@@ -64,6 +64,89 @@ This command will create a project scaffolding, keeping our assets well-organize
 - `secrets.toml`: Stores the necessary credentials required to access my personal AWS account.
 - `config.toml`: Used for configuring the pipeline.
 
+Also included in the scaffolding is a template python api file that after a few changes we can use as our own! After my own revisions the end result was as follows:
+
+```python
+from datetime import datetime, timedelta
+from typing import Any
+import dlt
+from dlt.sources.rest_api import (RESTAPIConfig,  # type: ignore
+                                  rest_api_resources)
+
+
+# Funtion to calculate date range
+def get_date_range() -> tuple[str, str]:
+    """
+    Calculates date range for the API call
+    Returns
+    tuple:since, until
+    """
+
+    yesterday = datetime.now() - timedelta(days=1)
+
+    since = yesterday.replace(hour=0, minute=0, second=0,
+                              microsecond=0).isoformat() + 'Z'
+    until = yesterday.replace(hour=23, minute=59, second=59,
+                              microsecond=999999).isoformat() + 'Z'
+
+    return since, until
+
+
+# Define the Bluesky posts resource
+@dlt.source
+def bluesky_source() -> Any:
+    """
+    Configure the API call
+    """
+
+    since, until = get_date_range()
+
+    # Define RESTAPIConfig for Bluesky API
+    config: RESTAPIConfig = {
+        "client": {"base_url": "https://public.api.bsky.app/xrpc/"},
+        "resources": [
+            {
+                "name": "posts",
+                "endpoint": {
+                    "path": "app.bsky.feed.searchPosts",
+                    "params": {
+                        "q": "data engineer",  # Search term
+                        "sort": "latest",
+                        "since": since,
+                        "until": until,
+                        "tag": ["dataBS", "datasky"],
+                        "limit": 100,
+                    },
+                },
+            },
+        ],
+    }
+
+    # Generate resources using RESTAPIConfig
+    yield from rest_api_resources(config)
+
+
+def create_pipeline() -> Any:
+    """
+    Create and configure the pipeline
+    """
+    pipeline = dlt.pipeline(
+        pipeline_name="blueskyAPI",
+        destination="filesystem",
+        dataset_name="blueskyData",
+        progress="log",
+    )
+    return pipeline
+
+
+# Set pipeline variable
+pipeline = create_pipeline()
+# Run the pipeline
+load_info = pipeline.run(bluesky_source())
+print(load_info)
+
+```
+
 ## Orchestration
 
 Good orchestration is absolutely key for any quality data pipeline. A well-orchestrated pipeline will be automated, ensuring clean, high-quality data at a consistent time. It should be scalable and efficient, helping to keep costs low and trust in the data high. It will have minimal manual interventions and robust error handling. Dagster provides all that and more.
