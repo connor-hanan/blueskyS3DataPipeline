@@ -174,8 +174,6 @@ in the first directory named `bluesky_post`, not the second! Once installed, run
 dagster dev
 ```
 
-This command will launch a GUI on your local machine, allowing you to interact with the pipeline visually!
+This command will launch a nice little web interface where you can configure the pipeline visually.
 
 ![dagster-gui](./images/dagster-ui.png)
-
-And there you have it! From here, we can schedule the pipeline to run automatically, along with many other administrative functions!
